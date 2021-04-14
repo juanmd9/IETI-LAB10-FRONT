@@ -1,6 +1,12 @@
 # Task Planner App
 
-[Heroku Task Planner App](https://lab4-taskplanner.herokuapp.com)
+[Front-End Task Planner App](http://localhost:3000/)
 
 
-[Azure Task Planner App](https://lab4-taskplanner.azurewebsites.net)
+[Back-End Task Planner App](http://localhost:8080/)
+
+## Credenciales
+```
+email: juan
+password: 123
+```

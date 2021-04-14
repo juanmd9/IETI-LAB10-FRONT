@@ -12,7 +12,8 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Profile from "./profile/Profile";
-import SingUp from "./singup/SingUp"
+import SingUp from "./singup/SingUp";
+import axios from 'axios';
 
 function App() {
   // const LoginView = () => <Login success={loginSuccess} failed={loginFailed} />;
@@ -26,9 +27,24 @@ function App() {
       right: theme.spacing(6),
     }
   }));
-  const { listTask, setListTask } = useListTask([]);
+  // const { listTask, setListTask } = useListTask([]);
+  const [ listTask, setListTask ] = useState([]);
+  React.useEffect(() => {
+    
+    async function callA() {
+      axios.get('http://localhost:8080/api/todo')
+      .then(function (response) {
+          console.log(response.data);
+          setListTask(response.data);
+      })
+      .catch(function (error) {
+          console.log(error);
+      });
+      }
+      callA()
+    }, []);
   const classes = useStyles();
-  console.log(listTask, "$$$$$$$$$")
+  // console.log(listTask, "$$$$$$$$$")
   const todoAppView = () => (
     <div> 
       {listTask.map((task, index) => <div key={index}><SimpleCard  prueba={task} /><br /></div>)}
@@ -52,7 +68,7 @@ function App() {
     return (
     <Router>
       <Route exact path="/">
-        {isLoggedIn ? <Redirect to="/todo" /> : <Login setIsLoggedIn={setIsLoggedIn} />}
+        {isLoggedIn ? <Redirect to="/todo" /> : <Login setIsLoggedIn={setIsLoggedIn} setListTask={setListTask} />}
       </Route>
       <Route path="/singup">
         <SingUp />
@@ -60,13 +76,13 @@ function App() {
       
       <Switch>
         <Route path="/todo">
-        {!isLoggedIn ? <Redirect to="/" /> : <Login setIsLoggedIn={setIsLoggedIn} />}
+        {!isLoggedIn ? <Redirect to="/" /> : <Login setIsLoggedIn={setIsLoggedIn} setListTask={setListTask} />}
         </Route>
         <Route path="/newtask">
-        {!isLoggedIn ? <Redirect to="/" /> : <Login setIsLoggedIn={setIsLoggedIn} />}
+        {!isLoggedIn ? <Redirect to="/" /> : <Login setIsLoggedIn={setIsLoggedIn} setListTask={setListTask} />}
         </Route>
         <Route path="/profile">
-        {!isLoggedIn ? <Redirect to="/" /> : <Login setIsLoggedIn={setIsLoggedIn} />}
+        {!isLoggedIn ? <Redirect to="/" /> : <Login setIsLoggedIn={setIsLoggedIn} setListTask={setListTask} />}
         </Route>
       </Switch>
     </Router> 
@@ -77,7 +93,7 @@ function App() {
     <div className="wrapper">
       <Router>
       <Route exact path="/">
-        {isLoggedIn ? <Redirect to="/todo" /> : <Login setIsLoggedIn={setIsLoggedIn} />}
+        {isLoggedIn ? <Redirect to="/todo" /> : <Login setIsLoggedIn={setIsLoggedIn} setListTask={setListTask} />}
       </Route>
       <Switch>
         <Route path="/todo">

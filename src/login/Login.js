@@ -16,6 +16,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import PropTypes from 'prop-types';
 import Copyright from '../Copyright';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -44,7 +45,7 @@ function createUser() {
   // localStorage.setItem("isLoggedIn", false);
 }
 
-export default function Login({setIsLoggedIn}) {
+export default function Login({setIsLoggedIn, setListTask}) {
   function loginFailed() {
     alert("Login Failed! +++ ");
 
@@ -52,6 +53,19 @@ export default function Login({setIsLoggedIn}) {
   function loginSuccess(e) {
     alert("Login Success! +++");
   }
+
+  function getList(){
+    axios.get('http://localhost:8080/api/todo')
+      .then(function (response) {
+          console.log(response.data);
+          setListTask(response.data);
+      })
+      .catch(function (error) {
+          console.log(error);
+      });
+             
+ }
+
   function handleSubmit(e) {
     const formData = new FormData(e.target);
     const user = {};
@@ -70,13 +84,14 @@ export default function Login({setIsLoggedIn}) {
     ) {
       localStorage.setItem("isLoggedIn", true);
       setIsLoggedIn(true);
+      getList();
       loginSuccess();
     } else {
       localStorage.setItem("isLoggedIn", false);
       setIsLoggedIn(false);
       loginFailed();
     }
-    console.log(JSON.parse(localStorage.getItem("isLoggedIn")));
+    // console.log(JSON.parse(localStorage.getItem("isLoggedIn")));
   }
 
   createUser();

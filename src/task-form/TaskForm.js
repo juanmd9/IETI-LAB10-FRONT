@@ -15,6 +15,8 @@ import Moment from 'moment';
 import FormControl from "@material-ui/core/FormControl";
 import PropTypes from 'prop-types';
 import { useHistory } from "react-router-dom";
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel'
 import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
@@ -46,21 +48,32 @@ export default function TaskForm({setListTask}) {
     const history = useHistory();
     console.log(!history, "3")
     async function handleSubmit(e) {
-        // const formData = new FormData(e.target);
-        // e.preventDefault();
-        // const newTask = {};
-        // for (let entry of formData.entries()) {
-        //     newTask[entry[0]] = entry[1];
-        // }
+        const formData = new FormData(e.target);
+        e.preventDefault();
+        const newTask = {};
+        for (let entry of formData.entries()) {
+            newTask[entry[0]] = entry[1];
+        }
         // console.log(newTask, "%&%&%&%&%");
-        // await setListTask([newTask]);
-        // history.push("/todo");
+        var responsible = newTask["responsible"];
+        newTask["responsible"] = {"name":responsible};
+        // console.log(newTask, "#########");
         let data = new FormData();
-        data.append('file', file);
-
+        data.append('file', fileUrl);
         axios.post('http://localhost:8080/api/files', data)
-            .then(function (response) {
-                console.log("file uploaded!", response.data);
+        .then(function (response) {
+            console.log("file uploaded!", response.data);
+            newTask["fileUrl"] = response.data;
+            axios.post('http://localhost:8080/api/todo', newTask)
+            .then(function (response1) {
+                console.log("Todo created!", response1.data);
+                console.log("$$$$$$$$$$", newTask)
+                setListTask([newTask]);
+                history.push("/todo");
+            })
+            .catch(function (error1) {
+                console.log("failed creating Todo", error1);
+            });
         })
         .catch(function (error) {
             console.log("failed file upload", error);
@@ -76,7 +89,7 @@ export default function TaskForm({setListTask}) {
     const [responsible, setResponsible] = useState();
     const [status, setStatus] = useState();
     const [startDate, setStartDate] = useState();
-    const [file, setFile] = useState();
+    const [fileUrl, setFile] = useState();
     const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
     const theme = React.useMemo(
         () =>
@@ -127,7 +140,23 @@ export default function TaskForm({setListTask}) {
                                 </FormControl>
                             </Grid>
                             <Grid item xs={12}>
-                                <FormControl margin="normal" required fullWidth>
+                                <FormControl variant="outlined" required fullWidth>
+                                    <InputLabel htmlFor="outlined-status-native-simple">Status</InputLabel>
+                                    <Select
+                                        native
+                                        label="Status"
+                                        inputProps={{
+                                            name: 'status',
+                                            id: 'outlined-status-native-simple',
+                                        }}
+                                    >
+                                        <option aria-label="None" value="" />
+                                        <option value={'Ready'}>Ready</option>
+                                        <option value={'In Progress'}>In Progress</option>
+                                        <option value={'Done'}>Done</option>
+                                    </Select>
+                                </FormControl>
+                                {/* <FormControl margin="normal" required fullWidth>
                                     <TextField
                                         variant="outlined"
                                         required
@@ -139,7 +168,7 @@ export default function TaskForm({setListTask}) {
                                         autoComplete="current-status"
                                         onChange={setStatus}
                                     />
-                                </FormControl>
+                                </FormControl> */}
                             </Grid>
                             <Grid item xs={12}>
                                 <FormControl margin="normal" required fullWidth>
@@ -162,10 +191,10 @@ export default function TaskForm({setListTask}) {
                                     <TextField
                                         variant="outlined"
                                         fullWidth
-                                        name="file"
+                                        name="fileUrl"
                                         label="File"
                                         type="file"
-                                        id="file"
+                                        id="fileUrl"
                                         onChange={handleInputChange}
                                     />
                                 </FormControl>

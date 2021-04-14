@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SimpleCard(prueba) {
   const classes = useStyles();
   const bull = <span className={classes.bullet}>•</span>;
-  console.log("<<<", prueba)
+  // console.log("<<<", prueba)
 
   return (
     <Card className={classes.root}>
@@ -50,6 +51,7 @@ export default function SimpleCard(prueba) {
         <Typography variant="body2" component="p">
           {prueba.prueba.responsible.name}
         </Typography>
+        {prueba.prueba.fileUrl.endsWith(".pdf") ? <Button href={prueba.prueba.fileUrl} target="_blank">Descargar <PictureAsPdfIcon  /></Button>: <img src={prueba.prueba.fileUrl} /> }
       </CardContent>
       {/* <CardActions>
         <Button size="small">Learn More</Button>

@@ -91,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
 export default function PersistentDrawerLeft({ prueba }) {
   const classes = useStyles();
   const history = useHistory();
-  console.log(!history, "#");
+  // console.log(!history, "#");
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const theme = React.useMemo(
     () =>
